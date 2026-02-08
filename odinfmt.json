@@ -1,0 +1,6 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DanielGavin/ols/master/misc/odinfmt.schema.json",
+  "tabs": false,
+  "spaces": 4,
+  "newline_limit": 1
+}
