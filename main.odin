@@ -1,5 +1,6 @@
 package main
 
+import "core:bufio"
 import "core:encoding/json"
 import "core:fmt"
 import "core:os/os2"
@@ -52,12 +53,19 @@ main :: proc() {
         user_time    = state.user_time,
     }
 
+    buf_w: bufio.Writer
+    bufio.writer_init(&buf_w, os2.to_writer(os2.stdout))
+
     merr := json.marshal_to_writer(
-        os2.to_writer(os2.stdout),
+        bufio.writer_to_writer(&buf_w),
         ri,
         &{pretty = true, use_spaces = true, spaces = 2},
     )
     if merr != nil {
         fatal("error marshalling run info: %s\n", merr)
+    }
+
+    if berr := bufio.writer_flush(&buf_w); berr != nil {
+        fatal("error flushing stdout: %s\n", berr)
     }
 }
