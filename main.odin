@@ -4,16 +4,16 @@ import "core:bufio"
 import "core:encoding/json"
 import "core:fmt"
 import "core:io"
-import "core:os/os2"
+import "core:os"
 import "core:time"
 
 fatal :: proc(format: string, args: ..any) {
     fmt.eprintf(format, ..args)
-    os2.exit(1)
+    os.exit(1)
 }
 
 main :: proc() {
-    args := os2.args
+    args := os.args
     if len(args) <= 1 {
         fatal("not enough args\n")
     }
@@ -44,11 +44,11 @@ deinit_run_info :: proc(ri: Run_Info) {
     delete(ri.stderr)
 }
 
-Run_Error :: os2.Error
+Run_Error :: os.Error
 
 run :: proc(args: []string) -> (Run_Info, Run_Error) {
     start := time.tick_now()
-    state, stdout, stderr, err := os2.process_exec({command = args}, context.allocator)
+    state, stdout, stderr, err := os.process_exec({command = args}, context.allocator)
     end := time.tick_now()
 
     if err != nil {
@@ -77,7 +77,7 @@ Print_Error :: union #shared_nil {
 
 print_run_info :: proc(run_info: Run_Info) -> Print_Error {
     buf_w: bufio.Writer
-    bufio.writer_init(&buf_w, os2.to_writer(os2.stdout))
+    bufio.writer_init(&buf_w, os.to_writer(os.stdout))
     w := bufio.writer_to_writer(&buf_w)
 
     marshall_opts: json.Marshal_Options = {
